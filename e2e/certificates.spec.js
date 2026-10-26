@@ -58,3 +58,60 @@ test('preview failure does not block generation and asset failures can be retrie
   expect((await downloaded).suggestedFilename()).toBe('FireTalk-sertifikatlar.zip');
   await expect(page.locator('#status')).toHaveText('1 sertifikat hazırdır.');
 });
+
+async function uploadTemplate(page, { rotated = false, placeholder = true } = {}) {
+  const { degrees, rgb } = await import('pdf-lib');
+  const doc = await PDFDocument.create(); doc.addPage([600,400]);
+  const target=doc.addPage([600,400]);
+  if(rotated) target.setRotation(degrees(90));
+  if(placeholder) target.drawText('Ad Soyad',{x:200,y:200,size:24,color:rgb(.5,0,0)});
+  await page.locator('#template').setInputFiles({name:'custom.pdf',mimeType:'application/pdf',buffer:Buffer.from(await doc.save())});
+  await expect(page.locator('#editor')).toBeVisible();
+  await expect(page.locator('#generate')).toBeEnabled();
+}
+
+test('custom PDF detects placeholder and exports the selected page with all pages preserved',async({page})=>{
+  await setup(page);await uploadTemplate(page);
+  await page.locator('#page').selectOption('2');
+  await expect(page.locator('#cover')).toBeChecked();
+  await expect(page.locator('#status')).toContainText('Ad sahəsi tapıldı');
+  expect(await page.locator('#color').inputValue()).not.toBe('#000038');
+  await page.locator('#zip').uncheck();
+  const downloaded=page.waitForEvent('download');await page.locator('#generate').click();
+  const pdf=await PDFDocument.load(await downloadBytes(await downloaded));
+  expect(pdf.getPageCount()).toBe(2);expect(pdf.getPage(1).getSize()).toEqual({width:600,height:400});
+  await page.locator('#firetalk').click();await expect(page.locator('#editor')).toBeHidden();
+  await expect(page.locator('#template-name')).toHaveText('Hazır FireTalk şablonu');
+});
+
+test('manual rectangle selection, decimal controls and rotated PDF export',async({page})=>{
+  await setup(page);await uploadTemplate(page,{rotated:true,placeholder:false});
+  await page.locator('#page').selectOption('2');
+  await expect(page.locator('#generate')).toBeEnabled();
+  await page.locator('#select-area').click();
+  await expect(page.locator('#preview-status')).toHaveText('Köhnə adın ətrafına çərçivə çək.');
+  const rect=await page.locator('#canvas').boundingBox();
+  await page.mouse.move(rect.x+rect.width*.2,rect.y+rect.height*.4);await page.mouse.down();
+  await page.mouse.move(rect.x+rect.width*.8,rect.y+rect.height*.5,{steps:5});await page.mouse.up();
+  await expect(page.locator('#cover')).toBeChecked();
+  await page.locator('#x').fill('49.7');await page.locator('#y').fill('45.3');
+  await expect(page.locator('#generate')).toBeEnabled();
+  const downloaded=page.waitForEvent('download');await page.locator('#generate').click();
+  const zip=await JSZip.loadAsync(await downloadBytes(await downloaded));
+  const file=Object.values(zip.files).find(f=>!f.dir);expect(file.name).toBe('sertifikatlar/001-Əli Hüseynov.pdf');
+  const pdf=await PDFDocument.load(await file.async('uint8array'));expect(pdf.getPage(1).getRotation().angle).toBe(90);
+});
+
+test('invalid PDF retains previous template, invalid numbers recover and uploaded font works',async({page})=>{
+  await setup(page);await uploadTemplate(page);
+  await page.locator('#template').setInputFiles({name:'broken.pdf',mimeType:'application/pdf',buffer:Buffer.from('broken')});
+  await expect(page.locator('#status')).toContainText('Əvvəlki şablon saxlanıldı');
+  await page.locator('#size').fill('');await expect(page.locator('#generate')).toBeDisabled();
+  await page.locator('#size').fill('32');await expect(page.locator('#generate')).toBeEnabled();
+  await page.locator('#cover').check();await expect(page.locator('#cover')).toBeChecked();
+  await expect(page.locator('#status')).toContainText('Örtük adın koordinatları');
+  await page.locator('#font-file').setInputFiles('public/certificate-font.ttf');
+  await expect(page.locator('#status')).toHaveText('Öz şriftin tətbiq edildi.');
+  await expect(page.locator('#generate')).toBeEnabled();
+  for(const width of [320,768,1440]){await page.setViewportSize({width,height:1000});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+});

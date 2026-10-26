@@ -1,6 +1,6 @@
-# FireTalk sertifikat studiyası
+# Sertifikat studiyası
 
-Göndərilmiş `FireTalk_Istirak_Sertifikati.pdf` şablonuna uyğun toplu sertifikat generatoru. Şablon tətbiqdə hazır açılır: istifadəçi yalnız adları yazır və ZIP və ya ayrıca PDF seçir. Adlar brauzerdə emal olunur, serverə göndərilmir.
+İstənilən şifrəsiz PDF şablonuna ad siyahısını yerləşdirən brauzer tətbiqi. Hazır FireTalk şablonu da saxlanılır. PDF, adlar və əlavə şriftlər serverə göndərilmir.
 
 ## İşə salmaq
 
@@ -18,23 +18,27 @@ npm run build
 npm run preview -- --port 4173
 ```
 
-Brauzer testləri sistemdə `/usr/bin/chromium` varsa ondan istifadə edir; başqa mühitdə əvvəlcə `npx playwright install chromium` işlədin. `dist/` statik HTTPS hostinqdə yayımlana bilər. Alt qovluqda hostinq üçün Vite build zamanı uyğun `--base` seçin. Şrift və PDF worker tətbiqlə birlikdə verilir; API açarı tələb olunmur.
+Brauzer testləri sistemdə `/usr/bin/chromium` varsa ondan istifadə edir; başqa mühitdə əvvəlcə `npx playwright install chromium` işlədin. `dist/` statik HTTPS hostinqdə yayımlana bilər. Alt qovluq üçün uyğun Vite `--base` seçin. Şrift və PDF worker tətbiqlə birlikdə verilir; API açarı tələb olunmur.
 
-## İstifadə
+## Öz PDF şablonun
 
-1. Hər sətirdə bir ad və soyad yazın və ya UTF-8 TXT faylı əlavə edin.
-2. Birinci şəxsin sertifikatını canlı önizləmədə yoxlayın.
-3. ZIP seçimini açıq saxlasanız, bütün PDF-lər `FireTalk-sertifikatlar/` qovluğunda arxivlə endirilir.
-4. ZIP-i söndürsəniz, ayrıca PDF linkləri görünür. Tək şəxsin PDF-si birbaşa endirilir. Dəstəklənən brauzerlərdə hamısını seçilmiş qovluğa saxlamaq da mümkündür.
+1. “Öz PDF şablonunu yüklə” ilə faylı seçin, lazım olsa səhifəni dəyişin. Bütün səhifələr çıxış PDF-də saxlanılır; ad yalnız seçilmiş səhifəyə yazılır.
+2. PDF-də ayrıca mətn olan “Ad Soyad”, “Full name”, “Name Surname”, “Recipient name” və oxşar ad sahəsi tapılarsa, yer və ölçü avtomatik seçilir. Yazının və fonun rəngi önizləmədən təxmin edilir. Nəticəni yoxlayın.
+3. Şəkil/skan formasında PDF və ya başqa ad yeri üçün “Sahəni seç” düyməsini basın, önizləmədə köhnə adın ətrafına çərçivə çəkin. Ad mərkəzlənir və uzun adlar sahəyə sığdırılır. Bu, OCR etmir.
+4. Adın rəngini, ölçüsünü, maksimum enini, üfüqi/şaquli faizlərini dəyişin. “Şablondan rəng seç” ilə orijinal rəngdən nümunə götürmək olar. Hazır iki şrift arasından seçim edin və ya uyğun TTF/OTF yükləyin; şrift avtomatik orijinal PDF-dən çıxarılmır.
+5. Şablonda köhnə ad varsa, “Seçilmiş sahədə köhnə adı ört” seçimini açın. Çərçivə ilə seçilən sahə fon rəngi ilə örtülür. Klaviatura ilə işləyərkən əvvəlcə koordinatları, maksimum eni və ölçünü daxil edib örtük seçimini açın: örtük həmin ölçülərdən yaranacaq. Naxışlı və şəkilli fon avtomatik bərpa edilmir — belə hallarda adsız şablondan istifadə edin.
+6. Hər sətirdə bir iştirakçı daxil edin və ya UTF-8 TXT yükləyin. ZIP açıq olduqda PDF-lər arxivdə qovluğa toplanır; bağlı olduqda ayrı PDF linkləri verilir. Tək PDF birbaşa endirilir. Dəstəklənən brauzerlərdə qovluğa toplu saxlamaq da mümkündür.
 
-Şablonun ölçüsü 1491 × 1055 PDF nöqtəsidir. Yuxarıdakı iki loqo istifadəçinin göndərdiyi versiyalar əsasında yenilənib; şəffaf fonlu fayllar `public/firetalk-startup-logo.png` və `public/firetalk-science-logo.png` olaraq saxlanılıb və PDF şablonuna daxil edilib. İmza istifadəçinin göndərdiyi yeni imza əsasında yenilənib; şəffaf fonlu variant `public/firetalk-signature.png` faylındadır və PDF şablonuna daxil edilib. Orijinal şablonda “Ad Soyad” yazısı şəklin içindədir. `src/firetalk.js` bu yazının örtüləcək sahəsini və yeni adın yerini, tünd göy rəngini, ölçüsünü müəyyən edir. Yeni ad Montserrat ExtraBold şrifti ilə mərkəzlənir; uzun adlar mövcud xəttin eninə sığdırılır. Şablonun qalan hissəsi orijinal PDF-dən saxlanılır. Koordinat seçimi və əlavə PDF yükləmə tələb olunmur.
+Şifrəli və korlanmış PDF-lər qəbul edilmir; əvvəlki işlək şablon saxlanılır. Nəticələr səhifə yenilənəndə silinir. Say limiti yoxdur, amma böyük siyahılar brauzer yaddaşı ilə məhdudlaşır.
 
-Təkrar adlar sıra nömrələri ilə ayrıca fayl alır. Say üçün tətbiq limiti yoxdur; çox böyük siyahılar brauzer yaddaşı ilə məhdudlaşır. Nəticələr səhifə yenilənənədək qalır: endirmələri saxlayın. Önizləmə ayrıca işləyir, onun xətası PDF yaratmağı bloklamır.
+## Hazır FireTalk şablonu
+
+“H​azır FireTalk şablonuna qayıt” hazır ad yerləşməsini bərpa edir. İmza və iki loqo istifadəçinin göndərdiyi nümunələr əsasında yenilənib. Şablon və ayrıca loqo/imza faylları `public/` qovluğundadır. `src/firetalk.js` adın dəqiq sahəsini, yerini, rəngini və ölçüsünü saxlayır.
 
 ## Yoxlama
 
-`npm test`: 30 Azərbaycan adlı sertifikat, ZIP, uzun adlar, səhifə fırlanması və göndərilmiş FireTalk şablonu ilə yaradılma.
+`npm test`: 30 Azərbaycan adlı PDF, ZIP, uzun və təkrar adlar, səhifə fırlanması və FireTalk şablonu.
 
-`npm run test:browser`: hazır FireTalk şablonu, bir nəfərlə ZIP/PDF endirmə, çoxsaylı və təkrar adlar, TXT idxalı, boş siyahı, mobil görünüş, şablon yükləmə xətasından bərpa və önizləmə olmadan PDF yaradılması.
+`npm run test:browser`: FireTalk və öz PDF-ni yükləmə, avtomatik ad sahəsi, əllə çərçivə, kəsrli koordinatlar, çoxsəhifəli/fırladılmış PDF, şrift yükləmə, xətadan bərpa, mobil görünüş, ZIP və PDF endirmə.
 
-PDF: pdf-lib, fontkit, PDF.js. ZIP: JSZip. Montserrat: `public/MONTSERRAT-LICENSE.txt`. Ümumi PDF mühərrikinin test şrifti DejaVu Serif: `public/FONT-LICENSE.txt`.
+PDF: pdf-lib, fontkit, PDF.js. ZIP: JSZip. Şrift lisenziyaları: `public/MONTSERRAT-LICENSE.txt`, `public/FONT-LICENSE.txt`.
