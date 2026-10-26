@@ -27,7 +27,7 @@ Brauzer testləri sistemdə `/usr/bin/chromium` varsa ondan istifadə edir; baş
 3. ZIP seçimini açıq saxlasanız, bütün PDF-lər `FireTalk-sertifikatlar/` qovluğunda arxivlə endirilir.
 4. ZIP-i söndürsəniz, ayrıca PDF linkləri görünür. Tək şəxsin PDF-si birbaşa endirilir. Dəstəklənən brauzerlərdə hamısını seçilmiş qovluğa saxlamaq da mümkündür.
 
-Şablonun ölçüsü 1491 × 1055 PDF nöqtəsidir. Orijinal şablonda “Ad Soyad” yazısı şəklin içindədir. `src/firetalk.js` bu yazının örtüləcək sahəsini və yeni adın yerini, tünd göy rəngini, ölçüsünü müəyyən edir. Yeni ad Montserrat ExtraBold şrifti ilə mərkəzlənir; uzun adlar mövcud xəttin eninə sığdırılır. Şablonun qalan hissəsi orijinal PDF-dən saxlanılır. Koordinat seçimi və əlavə PDF yükləmə tələb olunmur.
+Şablonun ölçüsü 1491 × 1055 PDF nöqtəsidir. İmza istifadəçinin göndərdiyi yeni imza əsasında yenilənib; şəffaf fonlu variant `public/firetalk-signature.png` faylındadır və PDF şablonuna daxil edilib. Orijinal şablonda “Ad Soyad” yazısı şəklin içindədir. `src/firetalk.js` bu yazının örtüləcək sahəsini və yeni adın yerini, tünd göy rəngini, ölçüsünü müəyyən edir. Yeni ad Montserrat ExtraBold şrifti ilə mərkəzlənir; uzun adlar mövcud xəttin eninə sığdırılır. Şablonun qalan hissəsi orijinal PDF-dən saxlanılır. Koordinat seçimi və əlavə PDF yükləmə tələb olunmur.
 
 Təkrar adlar sıra nömrələri ilə ayrıca fayl alır. Say üçün tətbiq limiti yoxdur; çox böyük siyahılar brauzer yaddaşı ilə məhdudlaşır. Nəticələr səhifə yenilənənədək qalır: endirmələri saxlayın. Önizləmə ayrıca işləyir, onun xətası PDF yaratmağı bloklamır.
 
