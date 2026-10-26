@@ -13,6 +13,7 @@ npm run dev -- --port 5173
 
 ```sh
 npm test
+npm run test:browser
 npm run build
 npm run preview -- --port 4173
 ```
@@ -29,6 +30,8 @@ npm run preview -- --port 4173
 Orijinal PDF-nin bütün səhifələri saxlanılır, ad yalnız seçilmiş səhifəyə yazılır. Fayl adları sıra nömrəsi daşıyır; eyni adlı şəxslər bir-birinin faylını əvəz etmir. Say üçün tətbiq limiti yoxdur, amma çox böyük şablon və siyahılar brauzerin yaddaşı ilə məhdudlaşır. Hazırlanmış nəticələr səhifə yenilənəndə silinir; endirmələri əvvəlcədən saxlayın.
 
 ## Yoxlama
+
+Brauzer testləri üçün Chromium tələb olunur: sistemdə `/usr/bin/chromium` varsa avtomatik istifadə edilir; başqa mühitdə əvvəlcə `npx playwright install chromium` icra edin. `npm run test:browser` bir nəfərlə ZIP/PDF endirməni, önizləmədə kəsrli koordinat seçimini, etibarsız parametrlərdən bərpanı və klaviatura ilə yerləşdirməni yoxlayır.
 
 `npm test` 30 Azərbaycan adlı, çoxsəhifəli sertifikatın yaradılmasını, ZIP qovluğunun tərkibini, fırladılmış səhifələri, uzun və təkrar adları yoxlayır. Brauzerdə real PDF şablonu ilə önizləmə və endirmə də yoxlanmalıdır.
 
