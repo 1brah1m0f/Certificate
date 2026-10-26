@@ -12,6 +12,9 @@ export async function createCertificate(template, fontBytes, name, options) {
   doc.registerFontkit(fontkit);
   const font = await doc.embedFont(fontBytes, { subset: true });
   const page = doc.getPage(options.page - 1);
+  if (options.replaceArea) {
+    page.drawRectangle({ ...options.replaceArea, color: rgb(1, 1, 1), borderWidth: 0 });
+  }
   const angle = ((page.getRotation().angle % 360) + 360) % 360;
   const { width, height } = page.getSize();
   const visibleWidth = angle === 90 || angle === 270 ? height : width;

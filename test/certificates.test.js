@@ -30,3 +30,17 @@ test('handles rotation, long names, duplicate names and unsafe filenames', async
   assert.notEqual(fileName('Əli', 0), fileName('Əli', 1));
   assert.equal(fileName('../test:name', 0), '001-.._test_name.pdf');
 });
+
+test('supplied FireTalk artwork is preserved with its fixed name placement', async () => {
+  const { FIRETALK } = await import('../src/firetalk.js');
+  const template = await readFile(new URL('../public/firetalk-template.pdf', import.meta.url));
+  const font = await readFile(new URL('../public/firetalk-font.ttf', import.meta.url));
+  for (const name of ['Əli Hüseynov', 'Şəbnəm Məmmədova', 'Çox Uzun İştirakçı Adı '.repeat(5)]) {
+    const bytes = await createCertificate(template, font, name, FIRETALK);
+    const pdf = await PDFDocument.load(bytes);
+    assert.deepEqual(pdf.getPage(0).getSize(), { width: 1491, height: 1055 });
+    assert.equal(pdf.getPageCount(), 1);
+    const contents = pdf.getPage(0).node.Contents();
+    assert.ok(contents.size() >= 2, 'original artwork and new content are retained');
+  }
+});
